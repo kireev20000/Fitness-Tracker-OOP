@@ -134,8 +134,8 @@ def read_package(workout_type: str, data: list) -> Training:
     training_type: dict[str, Training] = {'SWM': Swimming,
                                           'RUN': Running,
                                           'WLK': SportsWalking}
-    # if workout_type not in training_type.keys():
-    # print('ОШИБКА: Данные с датчика не соответвуют ожиданиям!')
+    if workout_type not in training_type.keys():
+        print('ОШИБКА: Данные с датчика не соответвуют ожиданиям!')
     return training_type.get(workout_type)(*data)
 
 
