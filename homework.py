@@ -1,25 +1,23 @@
+import dataclasses
+
+
+@dataclasses.dataclass
 class InfoMessage:
     """Информационное сообщение о тренировке."""
 
-    def __init__(self,
-                 training_type: str,
-                 duration: float,
-                 distance: float,
-                 speed: float,
-                 calories: float
-                 ) -> None:
-        self.training_type = training_type
-        self.duration = (duration)
-        self.distance = (distance)
-        self.speed = (speed)
-        self.calories = (calories)
+    training_type: str
+    duration: float
+    distance: float
+    speed: float
+    calories: float
+    message = ("Тип тренировки: {training_type}; "
+               "Длительность: {duration:.3f} ч.; "
+               "Дистанция: {distance:.3f} км; "
+               "Ср. скорость: {speed:.3f} км/ч; "
+               "Потрачено ккал: {calories:.3f}.")
 
     def get_message(self) -> str:
-        return (f'Тип тренировки: {self.training_type}; '
-                f'Длительность: {self.duration:.3f} ч.; '
-                f'Дистанция: {self.distance:.3f} км; '
-                f'Ср. скорость: {self.speed:.3f} км/ч; '
-                f'Потрачено ккал: {self.calories:.3f}.')
+        return self.message.format(**dataclasses.asdict(self))
 
 
 class Training:
@@ -29,11 +27,7 @@ class Training:
     LEN_STEP: float = 0.65
     MIN_IN_H: int = 60
 
-    def __init__(self,
-                 action: int,
-                 duration: float,
-                 weight: float,
-                 ) -> None:
+    def __init__(self, action: int, duration: float, weight: float) -> None:
         self.action = action
         self.duration = duration
         self.weight = weight
@@ -80,10 +74,14 @@ class SportsWalking(Training):
     KMH_IN_MSEC: float = 0.278
     CM_IN_M: int = 100
 
-    def __init__(self, action: int,
-                 duration: float,
-                 weight: float,
-                 height: float) -> None:
+    def __init__(
+        self,
+        action: int,
+        duration: float,
+        weight: float,
+        height: float
+    ) -> None:
+
         super().__init__(action, duration, weight)
         self.height = height
 
@@ -103,11 +101,15 @@ class Swimming(Training):
     CALORIES_WEIGHT_MULTIPLIER: int = 2
     LEN_STEP: float = 1.38
 
-    def __init__(self, action: int,
-                 duration: float,
-                 weight: float,
-                 length_pool: float,
-                 count_pool: int) -> None:
+    def __init__(
+            self,
+            action: int,
+            duration: float,
+            weight: float,
+            length_pool: float,
+            count_pool: int
+    ) -> None:
+
         super().__init__(action, duration, weight)
         self.length_pool = length_pool
         self.count_pool = count_pool
@@ -127,11 +129,13 @@ class Swimming(Training):
         return (self.action * self.LEN_STEP) / self.M_IN_KM
 
 
-def read_package(workout_type: str, data: list) -> Training:
+def read_package(workout_type: str, data: list[str, list]) -> Training:
     """Прочитать данные полученные от датчиков."""
     training_type: dict[str, Training] = {'SWM': Swimming,
                                           'RUN': Running,
                                           'WLK': SportsWalking}
+    if workout_type not in training_type.keys():
+        print('ОШИБКА: Данные с датчика не соответвуют ожиданиям!')
     return training_type.get(workout_type)(*data)
 
 
