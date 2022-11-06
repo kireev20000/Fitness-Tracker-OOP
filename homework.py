@@ -138,7 +138,7 @@ def read_package(workout_type: str, data: list) -> Training:
     try:
         return training_type.get(workout_type)(*data)
     except Exception:
-        print('ОШИБКА: Данные с датчика не соответвуют ожиданиям!')
+        print('ОШИБКА: Данные с датчика не соответвуют ожиданиям!!!')
 
 
 def main(training: Training) -> None:
