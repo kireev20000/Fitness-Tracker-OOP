@@ -79,7 +79,7 @@ class SportsWalking(Training):
         action: int,
         duration: float,
         weight: float,
-        height: float
+        height: float,
     ) -> None:
 
         super().__init__(action, duration, weight)
@@ -107,7 +107,7 @@ class Swimming(Training):
             duration: float,
             weight: float,
             length_pool: float,
-            count_pool: int
+            count_pool: int,
     ) -> None:
 
         super().__init__(action, duration, weight)
@@ -135,10 +135,10 @@ def read_package(workout_type: str, data: list) -> Training:
     training_type: dict[str, Training] = {'SWM': Swimming,
                                           'RUN': Running,
                                           'WLK': SportsWalking}
-    try:
-        return training_type.get(workout_type)(*data)
-    except Exception:
-        print('ОШИБКА: Данные с датчика не соответвуют ожиданиям!!!')
+
+    if workout_type not in training_type.keys():
+        raise ValueError('ОШИБКА: Данные с датчика не соответвуют ожиданиям!')
+    return training_type.get(workout_type)(*data)
 
 
 def main(training: Training) -> None:
