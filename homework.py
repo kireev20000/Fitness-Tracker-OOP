@@ -1,7 +1,7 @@
-import dataclasses
+from dataclasses import asdict, dataclass
 
 
-@dataclasses.dataclass
+@dataclass
 class InfoMessage:
     """Информационное сообщение о тренировке."""
 
@@ -17,7 +17,7 @@ class InfoMessage:
                "Потрачено ккал: {calories:.3f}.")
 
     def get_message(self) -> str:
-        return self.message.format(**dataclasses.asdict(self))
+        return self.message.format(**asdict(self))
 
 
 class Training:
@@ -131,12 +131,14 @@ class Swimming(Training):
 
 def read_package(workout_type: str, data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
-    training_type: dict[str, Training] = {'SWM': Swimming,
+
+    training_type: dict[str, Training] = {'WM': Swimming,
                                           'RUN': Running,
                                           'WLK': SportsWalking}
-    if workout_type not in training_type.keys():
+    try:
+        return training_type.get(workout_type)(*data)
+    except Exception:
         print('ОШИБКА: Данные с датчика не соответвуют ожиданиям!')
-    return training_type.get(workout_type)(*data)
 
 
 def main(training: Training) -> None:
